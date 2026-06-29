@@ -360,8 +360,13 @@ function photoSession(e){
   return null;
 }
 function photoFor(e){
-  var s=photoSession(e); if(s) return s;
+  // 1) 사용자가 직접 연결한 사진 우선
+  if(MANUAL_MATCH[e._id]&&PHOTO_LIST[MANUAL_MATCH[e._id]]) return PHOTO_LIST[MANUAL_MATCH[e._id]];
+  // 2) 온라인이면 Supabase에 저장된 사진(영구)
   if(PF&&PF.configured()&&e.photo_path) return publicPhotoUrl(e.photo_path);
+  // 3) 이번 세션에 불러온 자동매칭 사진
+  if(PHOTOS[e.name]) return PHOTOS[e.name];
+  if(PHOTOS[norm(e.name)]) return PHOTOS[norm(e.name)];
   return null;
 }
 function matchStatus(e){
@@ -604,7 +609,9 @@ function afterPhotos(){
   const matched=EXPERTS.filter(e=>photoFor(e)).length;
   document.getElementById('photoStat').textContent=`사진 ${matched}/${EXPERTS.length} 매칭`;
   document.getElementById('blkHint').style.display= matched? 'none':'flex';
-  renderGrid();renderPicklist();renderPreview();renderMatch();toast(`사진 ${matched}명 매칭됨`);
+  renderGrid();renderPicklist();renderPreview();renderMatch();
+  if(PF.configured()){ toast(`사진 ${matched}명 매칭 · Supabase에 저장 중…`); uploadAllPhotos(true,true); }
+  else toast(`사진 ${matched}명 매칭됨`);
 }
 
 /* ---------- edit modal ---------- */
@@ -768,11 +775,11 @@ async function uploadOnePhoto(e,file){
     renderGrid();renderPicklist();renderPreview(); if(typeof renderMatch==="function")renderMatch();
   }catch(err){console.error(err); if(msg)msg.textContent="실패: "+(err.message||err);}
 }
-async function uploadAllPhotos(){
-  if(!PF.configured()){toast("Supabase 연결 후 가능합니다");return;}
-  var targets=EXPERTS.filter(function(e){return e.id&&photoSession(e);});
-  if(!targets.length){toast("업로드할 매칭 사진이 없습니다");return;}
-  if(!confirm(targets.length+"명의 매칭된 사진을 Supabase에 업로드할까요? (덮어쓰기)"))return;
+async function uploadAllPhotos(silent,onlyNew){
+  if(!PF.configured()){ if(!silent)toast("Supabase 연결 후 가능합니다"); return; }
+  var targets=EXPERTS.filter(function(e){return e.id&&photoSession(e)&&(!onlyNew||!e.photo_path);});
+  if(!targets.length){ if(!silent)toast("업로드할 매칭 사진이 없습니다"); return; }
+  if(!silent && !confirm(targets.length+"명의 매칭된 사진을 Supabase에 업로드할까요? (덮어쓰기)"))return;
   var ok=0,fail=0,cnt=document.getElementById("matchCounts");
   setSupaStatus("saving");
   for(var i=0;i<targets.length;i++){var e=targets[i];
@@ -780,12 +787,14 @@ async function uploadAllPhotos(){
       var r=await PF.client.storage.from("expert-photos").upload(path,blob,{upsert:true,contentType:"image/jpeg"});
       if(r.error) throw r.error; e.photo_path=path; ok++;
     }catch(err){console.error(err);fail++;}
-    if(cnt)cnt.innerHTML="업로드 중… "+(i+1)+"/"+targets.length;
+    setSupaStatus("saving");
+    if(cnt)cnt.innerHTML="사진 저장 중… "+(i+1)+"/"+targets.length;
   }
   PHOTO_CACHE_BUST=Date.now();
   try{await PF.push();}catch(e){}
   setSupaStatus("saved");
-  toast("사진 업로드 완료: "+ok+"장"+(fail?(" / 실패 "+fail):""));
+  if(ok)toast("사진 "+ok+"장 Supabase에 저장됨"+(fail?(" / 실패 "+fail):""));
+  else if(fail)toast("사진 저장 실패 "+fail+"장 — 권한(Storage) 확인 필요");
   renderGrid();renderPicklist();renderPreview();renderMatch();
 }
 window.uploadAllPhotos=uploadAllPhotos;
