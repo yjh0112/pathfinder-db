@@ -359,6 +359,14 @@ function photoSession(e){
   if(PHOTOS[norm(e.name)]) return PHOTOS[norm(e.name)];
   return null;
 }
+// PPT용: pptxgenjs는 base64(data) 또는 원격 path가 필요. 세션 사진(base64) 우선, 없으면 Storage URL(path).
+function photoDataFor(e){
+  if(MANUAL_MATCH[e._id]&&PHOTO_LIST[MANUAL_MATCH[e._id]]) return {data:PHOTO_LIST[MANUAL_MATCH[e._id]]};
+  if(PHOTOS[e.name]) return {data:PHOTOS[e.name]};
+  if(PHOTOS[norm(e.name)]) return {data:PHOTOS[norm(e.name)]};
+  if(PF&&PF.configured()&&e.photo_path) return {path:publicPhotoUrl(e.photo_path)};
+  return null;
+}
 function photoFor(e){
   // 1) 사용자가 직접 연결한 사진 우선
   if(MANUAL_MATCH[e._id]&&PHOTO_LIST[MANUAL_MATCH[e._id]]) return PHOTO_LIST[MANUAL_MATCH[e._id]];
@@ -515,10 +523,12 @@ function pptBlock(p,s,e,x,y,w,h,dark){
   s.addShape(p.ShapeType.roundRect,{x,y,w,h,rectRadius:0.07,fill:{color:cardFill},line:{color:border,width:1},
     shadow:{type:"outer",color:"16243F",blur:8,offset:2,angle:90,opacity:dark?0.18:0.10}});
   s.addShape(p.ShapeType.roundRect,{x,y,w,h:0.09,rectRadius:0.04,fill:{color:GOLD}});
-  const px=x+0.4,py=y+0.42,pw=1.5,ph=2.0,img=photoFor(e);
-  if(img){ s.addImage({data:img,x:px,y:py,w:pw,h:ph,sizing:{type:"cover",w:pw,h:ph}});
+  const px=x+0.4,py=y+0.42,pw=1.5,ph=2.0,imgOpt=photoDataFor(e);
+  let imgOK=false;
+  if(imgOpt){ try{ s.addImage(Object.assign({x:px,y:py,w:pw,h:ph,sizing:{type:"cover",w:pw,h:ph}},imgOpt)); imgOK=true;
     s.addShape(p.ShapeType.roundRect,{x:px,y:py,w:pw,h:ph,rectRadius:0.04,fill:{type:"none"},line:{color:dark?"4A5A78":"E6E9EF",width:1}});
-  } else {
+  }catch(err){console.error('img',e.name,err);} }
+  if(!imgOK){
     s.addShape(p.ShapeType.roundRect,{x:px,y:py,w:pw,h:ph,rectRadius:0.04,fill:{color:dark?"22324F":"E9EDF3"}});
     s.addText(initials(e.name),{x:px,y:py,w:pw,h:ph,align:"center",valign:"middle",fontFace:"Arial",bold:true,fontSize:24,color:dark?"6E7E9C":"8A93A6"});
   }
@@ -569,8 +579,14 @@ document.getElementById('dlPptx').onclick=async()=>{
     if(i%6===0) await new Promise(r=>setTimeout(r,0));
   }
   document.getElementById('progT').textContent='PPT 파일 저장 중...';
-  await p.writeFile({fileName:'패스파인더_위원블록_통합본.pptx'});
-  prog.classList.remove('on');toast('통합본 PPT 저장 완료');
+  try{
+    await p.writeFile({fileName:'패스파인더_위원블록_통합본.pptx'});
+    prog.classList.remove('on');toast('통합본 PPT 저장 완료');
+  }catch(err){
+    console.error('pptx writeFile',err);
+    prog.classList.remove('on');
+    toast('PPT 저장 실패: '+(err&&err.message?err.message:err));
+  }
 };
 
 /* ---------- photo loading ---------- */
