@@ -539,7 +539,7 @@ function pptBlock(p,s,e,x,y,dark,pfx){
   s.addText(e.field||'',{x:tx,y:y+0.58,w:bw,h:0.25,align:"center",valign:"middle",fontFace:PPT_FONT,bold:true,fontSize:8,color:dark?GOLDS:fc[1],objectName:pfx+"_bgt"});
   s.addText(e.affil||"",{x:tx,y:y+0.86,w:tw,h:0.28,margin:0,fontFace:PPT_FONT,bold:true,fontSize:10,color:affilC,objectName:pfx+"_af"});
   const ls=blockLines(e,3);
-  if(ls.length){const cs=ls.map(t=>({text:t,options:{bullet:{characterCode:"00B7"},breakLine:true,fontSize:8.5,color:carC,paraSpaceAfter:1}}));
+  if(ls.length){const cs=ls.map(t=>({text:t,options:{bullet:{characterCode:"00B7",indent:8},breakLine:true,fontSize:8.5,color:carC,paraSpaceAfter:1}}));
     s.addText(cs,{x:tx,y:y+1.13,w:tw,h:H-1.2,margin:0,fontFace:PPT_FONT,lineSpacingMultiple:0.98,valign:"top",objectName:pfx+"_cr"});}
 }
 // 브라우저에서 Lblk_*/Dblk_* 도형들을 grpSp 그룹으로 묶기 (pptxgenjs는 그룹 미지원)
