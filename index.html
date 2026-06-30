@@ -516,74 +516,119 @@ async function zipDownload(arr,fn){
 const FC_PPT={'HQ':['E7EAF2','3F4A63'],'IB':['E3EDFF','1D4ED8'],'법률':['E9E3FF','6D28D9'],'부동산':['E6F6EE','0F8A4F'],
 '상속/증여':['FFE6EE','C026A3'],'세무':['FFE3E8','E11D48'],'외환':['E0F2FB','0E7490'],'주식/섹터':['E2F6EA','0F9D58'],
 '퇴직연금':['FDEEDE','C2620A'],'투자상품':['E6EFFF','2563EB'],'투자전략':['ECE4FB','7C3AED'],'트렌드':['FDEEDE','C2620A'],'포트폴리오':['E3EFFB','1F6FC2']};
-function pptBlock(p,s,e,x,y,w,h,dark){
-  const NAVY="16243F",GOLD="B89A5E",GOLDS="CBB178";
-  const cardFill=dark?NAVY:"FFFFFF",border=dark?"3A4A66":"E7D9B8",nameC=dark?"FFFFFF":NAVY,
-        titleC=dark?"C8D2E2":"374151",affilC=dark?"E7ECF4":"33373E",carC=dark?"AEBBD0":"475569";
-  s.addShape(p.ShapeType.roundRect,{x,y,w,h,rectRadius:0.07,fill:{color:cardFill},line:{color:border,width:1},
-    shadow:{type:"outer",color:"16243F",blur:8,offset:2,angle:90,opacity:dark?0.18:0.10}});
-  s.addShape(p.ShapeType.roundRect,{x,y,w,h:0.09,rectRadius:0.04,fill:{color:GOLD}});
-  const px=x+0.4,py=y+0.42,pw=1.5,ph=2.0,imgOpt=photoDataFor(e);
-  let imgOK=false;
-  if(imgOpt){ try{ s.addImage(Object.assign({x:px,y:py,w:pw,h:ph,sizing:{type:"cover",w:pw,h:ph}},imgOpt)); imgOK=true;
-    s.addShape(p.ShapeType.roundRect,{x:px,y:py,w:pw,h:ph,rectRadius:0.04,fill:{type:"none"},line:{color:dark?"4A5A78":"E6E9EF",width:1}});
+const PPT_FONT="원신한체";  // 통합본 PPT 폰트 (양식과 통일)
+// 6.1 x 1.74 고정 블록 — 양식 붙여넣기 영역과 정확히 일치. 각 도형에 objectName 태그(그룹화용).
+function pptBlock(p,s,e,x,y,dark,pfx){
+  const NAVY="16243F",GOLD="B89A5E",GOLDS="CBB178",W=6.1,H=1.74;
+  const border=dark?"3A4A66":"E7D9B8",nameC=dark?"FFFFFF":NAVY,titleC=dark?"C8D2E2":"374151",affilC=dark?"E7ECF4":"33373E",carC=dark?"AEBBD0":"475569";
+  s.addShape(p.ShapeType.roundRect,{x,y,w:W,h:H,rectRadius:0.06,fill:{color:dark?NAVY:"FFFFFF"},line:{color:border,width:1.1},objectName:pfx+"_card"});
+  s.addShape(p.ShapeType.roundRect,{x,y,w:W,h:0.08,rectRadius:0.03,fill:{color:GOLD},objectName:pfx+"_top"});
+  const pw=0.97,ph=1.3,px=x+0.24,py=y+0.24,imgOpt=photoDataFor(e);
+  let ok=false;
+  if(imgOpt){ try{ s.addImage(Object.assign({x:px,y:py,w:pw,h:ph,sizing:{type:"cover",w:pw,h:ph},objectName:pfx+"_ph"},imgOpt)); ok=true;
+    s.addShape(p.ShapeType.roundRect,{x:px,y:py,w:pw,h:ph,rectRadius:0.04,fill:{type:"none"},line:{color:dark?"4A5A78":"E6E9EF",width:0.75},objectName:pfx+"_phb"});
   }catch(err){console.error('img',e.name,err);} }
-  if(!imgOK){
-    s.addShape(p.ShapeType.roundRect,{x:px,y:py,w:pw,h:ph,rectRadius:0.04,fill:{color:dark?"22324F":"E9EDF3"}});
-    s.addText(initials(e.name),{x:px,y:py,w:pw,h:ph,align:"center",valign:"middle",fontFace:"Arial",bold:true,fontSize:24,color:dark?"6E7E9C":"8A93A6"});
+  if(!ok){
+    s.addShape(p.ShapeType.roundRect,{x:px,y:py,w:pw,h:ph,rectRadius:0.04,fill:{color:dark?"22324F":"E9EDF3"},objectName:pfx+"_ph"});
+    s.addText(initials(e.name),{x:px,y:py,w:pw,h:ph,align:"center",valign:"middle",fontFace:PPT_FONT,bold:true,fontSize:15,color:dark?"6E7E9C":"8A93A6",objectName:pfx+"_phi"});
   }
-  const tx=px+pw+0.4,tw=w-(pw+1.3);
-  s.addText([{text:e.name,options:{bold:true,fontSize:21,color:nameC}},{text:"  "+e.title,options:{fontSize:13,color:titleC}}],
-    {x:tx,y:y+0.4,w:tw,h:0.5,margin:0,fontFace:"Arial",valign:"middle"});
-  const fc=FC_PPT[e.field]||['EEF1F6','586377'],bw=Math.min(1.5,0.45+(e.field||'').length*0.2);
-  s.addShape(p.ShapeType.roundRect,{x:tx,y:y+0.95,w:bw,h:0.3,rectRadius:0.15,fill:{color:dark?"22324F":fc[0]}});
-  s.addText(e.field||'',{x:tx,y:y+0.95,w:bw,h:0.3,align:"center",valign:"middle",fontFace:"Arial",bold:true,fontSize:10,color:dark?GOLDS:fc[1]});
-  s.addText(e.affil||"",{x:tx,y:y+1.34,w:tw,h:0.34,margin:0,fontFace:"Arial",bold:true,fontSize:13,color:affilC});
-  const cs=blockLines(e,4).map(t=>({text:t,options:{bullet:{characterCode:"00B7"},breakLine:true,fontSize:11,color:carC,paraSpaceAfter:3}}));
-  if(cs.length) s.addText(cs,{x:tx,y:y+1.74,w:tw,h:h-1.9,margin:0,fontFace:"Arial",lineSpacingMultiple:1.05,valign:"top"});
+  const tx=px+pw+0.26,tw=x+W-tx-0.18;
+  s.addText([{text:e.name,options:{bold:true,fontSize:14.5,color:nameC}},{text:"  "+(e.title||""),options:{fontSize:9,color:titleC}}],{x:tx,y:y+0.2,w:tw,h:0.36,margin:0,fontFace:PPT_FONT,valign:"middle",objectName:pfx+"_nm"});
+  const fc=FC_PPT[e.field]||['EEF1F6','586377'],bw=Math.min(1.25,0.38+(e.field||'').length*0.16);
+  s.addShape(p.ShapeType.roundRect,{x:tx,y:y+0.58,w:bw,h:0.25,rectRadius:0.125,fill:{color:dark?"22324F":fc[0]},objectName:pfx+"_bgr"});
+  s.addText(e.field||'',{x:tx,y:y+0.58,w:bw,h:0.25,align:"center",valign:"middle",fontFace:PPT_FONT,bold:true,fontSize:8,color:dark?GOLDS:fc[1],objectName:pfx+"_bgt"});
+  s.addText(e.affil||"",{x:tx,y:y+0.86,w:tw,h:0.28,margin:0,fontFace:PPT_FONT,bold:true,fontSize:10,color:affilC,objectName:pfx+"_af"});
+  const ls=blockLines(e,3);
+  if(ls.length){const cs=ls.map(t=>({text:t,options:{bullet:{characterCode:"00B7"},breakLine:true,fontSize:8.5,color:carC,paraSpaceAfter:1}}));
+    s.addText(cs,{x:tx,y:y+1.13,w:tw,h:H-1.2,margin:0,fontFace:PPT_FONT,lineSpacingMultiple:0.98,valign:"top",objectName:pfx+"_cr"});}
+}
+// 브라우저에서 Lblk_*/Dblk_* 도형들을 grpSp 그룹으로 묶기 (pptxgenjs는 그룹 미지원)
+async function groupBlocksPptx(ab){
+  const A='http://schemas.openxmlformats.org/drawingml/2006/main';
+  const P='http://schemas.openxmlformats.org/presentationml/2006/main';
+  const zip=await JSZip.loadAsync(ab);
+  const names=Object.keys(zip.files).filter(n=>/^ppt\/slides\/slide\d+\.xml$/.test(n));
+  for(const nm of names){
+    let xml=await zip.file(nm).async('string');
+    const doc=new DOMParser().parseFromString(xml,'application/xml');
+    const spTree=doc.getElementsByTagNameNS(P,'spTree')[0]; if(!spTree) continue;
+    let maxId=1; const cns=doc.getElementsByTagNameNS(P,'cNvPr');
+    for(let i=0;i<cns.length;i++){const v=parseInt(cns[i].getAttribute('id')||'0');if(v>maxId)maxId=v;}
+    function collect(prefix){const r=[];const kids=spTree.childNodes;
+      for(let i=0;i<kids.length;i++){const ch=kids[i];if(ch.nodeType!==1)continue;
+        if(ch.localName!=='sp'&&ch.localName!=='pic')continue;
+        const cn=ch.getElementsByTagNameNS(P,'cNvPr')[0];const n=cn?cn.getAttribute('name'):'';
+        if(n&&n.indexOf(prefix)===0)r.push(ch);} return r;}
+    function bbox(els){let x0=1e15,y0=1e15,x1=-1e15,y1=-1e15;
+      for(const el of els){const o=el.getElementsByTagNameNS(A,'off')[0],x=el.getElementsByTagNameNS(A,'ext')[0];
+        if(!o||!x)continue;const X=+o.getAttribute('x'),Y=+o.getAttribute('y'),CX=+x.getAttribute('cx'),CY=+x.getAttribute('cy');
+        if(X<x0)x0=X;if(Y<y0)y0=Y;if(X+CX>x1)x1=X+CX;if(Y+CY>y1)y1=Y+CY;}
+      return [x0,y0,x1-x0,y1-y0];}
+    function group(els,gname){if(!els.length)return;const b=bbox(els);maxId++;
+      const grp=doc.createElementNS(P,'p:grpSp');
+      const nv=doc.createElementNS(P,'p:nvGrpSpPr');
+      const cnv=doc.createElementNS(P,'p:cNvPr');cnv.setAttribute('id',String(maxId));cnv.setAttribute('name',gname);
+      nv.appendChild(cnv);nv.appendChild(doc.createElementNS(P,'p:cNvGrpSpPr'));nv.appendChild(doc.createElementNS(P,'p:nvPr'));
+      grp.appendChild(nv);
+      const gpr=doc.createElementNS(P,'p:grpSpPr');const xf=doc.createElementNS(A,'a:xfrm');
+      const o=doc.createElementNS(A,'a:off');o.setAttribute('x',String(b[0]));o.setAttribute('y',String(b[1]));
+      const ex=doc.createElementNS(A,'a:ext');ex.setAttribute('cx',String(b[2]));ex.setAttribute('cy',String(b[3]));
+      const co=doc.createElementNS(A,'a:chOff');co.setAttribute('x',String(b[0]));co.setAttribute('y',String(b[1]));
+      const ce=doc.createElementNS(A,'a:chExt');ce.setAttribute('cx',String(b[2]));ce.setAttribute('cy',String(b[3]));
+      xf.appendChild(o);xf.appendChild(ex);xf.appendChild(co);xf.appendChild(ce);gpr.appendChild(xf);grp.appendChild(gpr);
+      for(const el of els){spTree.removeChild(el);grp.appendChild(el);}
+      spTree.appendChild(grp);}
+    group(collect('Lblk'),'위원블록_밝은'); group(collect('Dblk'),'위원블록_어두운');
+    zip.file(nm,new XMLSerializer().serializeToString(doc));
+  }
+  return await zip.generateAsync({type:'blob',mimeType:'application/vnd.openxmlformats-officedocument.presentationml.presentation'});
 }
 document.getElementById('dlPptx').onclick=async()=>{
   if(typeof PptxGenJS==='undefined'){toast('PPT 모듈 로딩 중… 잠시 후 다시');return;}
+  if(typeof JSZip==='undefined'){toast('압축 모듈 로딩 중… 잠시 후 다시');return;}
   const list=[...EXPERTS].sort((a,b)=>a.name.localeCompare(b.name,'ko'));
   const prog=document.getElementById('prog');prog.classList.add('on');
   document.getElementById('progT').textContent='통합본 PPT 생성 준비 중...';
-  const NAVY="16243F",GOLD="B89A5E",GOLDS="CBB178";
+  const NAVY="16243F",GOLD="B89A5E",GOLDS="CBB178",W=6.1,BX=(13.33-6.1)/2;
   const p=new PptxGenJS();p.layout="LAYOUT_WIDE";p.author="Shinhan Premier Pathfinder";
   const matched=EXPERTS.filter(e=>photoFor(e)).length;
   let c=p.addSlide();c.background={color:NAVY};
   c.addImage({data:LOGO_FULL,x:0.6,y:0.45,w:1.9,h:1.0});
-  c.addText("PATHFINDER",{x:0.63,y:1.5,w:4,h:0.3,margin:0,fontFace:"Arial",bold:true,fontSize:12,color:GOLDS,charSpacing:4});
-  c.addText("패스파인더 위원 블록 통합본",{x:0.6,y:2.3,w:12,h:0.9,fontFace:"Arial",bold:true,fontSize:38,color:"FFFFFF"});
-  c.addText([{text:"위원 1명당 블록 2종  —  ",options:{bold:true,color:GOLDS}},
-    {text:"위는 밝은 배경용 · 아래는 어두운 배경용. 양식 PPT 색에 맞는 쪽을 쓰세요.",options:{color:"D7DEEA"}}],
-    {x:0.6,y:3.35,w:12,h:0.4,margin:0,fontFace:"Arial",fontSize:14});
-  c.addText([{text:"현장 사용법  ",options:{bold:true,color:GOLDS}},
-    {text:"Ctrl+F 로 이름 검색 → 원하는 블록 드래그 선택 → 복사 → 양식 점선 박스에 붙여넣기",options:{color:"D7DEEA"}}],
-    {x:0.6,y:4.0,w:12,h:0.5,margin:0,fontFace:"Arial",fontSize:13});
+  c.addText("PATHFINDER",{x:0.63,y:1.5,w:4,h:0.3,margin:0,fontFace:PPT_FONT,bold:true,fontSize:12,color:GOLDS,charSpacing:4});
+  c.addText("패스파인더 위원 블록 통합본",{x:0.6,y:2.3,w:12,h:0.9,fontFace:PPT_FONT,bold:true,fontSize:38,color:"FFFFFF"});
+  c.addText([{text:"각 블록 = 그룹 1개 · 크기 고정(6.1×1.74)  —  ",options:{bold:true,color:GOLDS}},
+    {text:"클릭 한 번 선택 → 복사 → 양식 점선 박스에 붙여넣으면 크기 그대로 맞습니다.",options:{color:"D7DEEA"}}],
+    {x:0.6,y:3.35,w:12,h:0.4,margin:0,fontFace:PPT_FONT,fontSize:14});
+  c.addText([{text:"수정이 필요하면  ",options:{bold:true,color:GOLDS}},
+    {text:"더블클릭으로 글자 수정 · 우클릭 → 그룹 해제 · 시간/강의주제는 양식에서 입력",options:{color:"D7DEEA"}}],
+    {x:0.6,y:4.0,w:12,h:0.5,margin:0,fontFace:PPT_FONT,fontSize:13});
   c.addText(`총 ${EXPERTS.length}명 · 사진 매칭 ${matched}명 · 생성일 ${new Date().toLocaleDateString('ko-KR')}`,
-    {x:0.6,y:6.7,w:12,h:0.4,fontFace:"Arial",fontSize:12,color:"9FB0C8"});
+    {x:0.6,y:6.7,w:12,h:0.4,fontFace:PPT_FONT,fontSize:12,color:"9FB0C8"});
   for(let i=0;i<list.length;i++){
     const e=list[i];
     document.getElementById('progT').textContent=`슬라이드 생성 중 ${i+1} / ${list.length} — ${e.name}`;
     document.getElementById('progBar').style.width=((i+1)/list.length*100)+'%';
     let s=p.addSlide();s.background={color:"F4F6FA"};
     s.addText([{text:e.name+"  ",options:{bold:true,color:NAVY,fontSize:13}},
-               {text:e.title+"  ·  "+e.field+"  ·  "+e.company,options:{color:"6B7280",fontSize:11}}],
-      {x:0.7,y:0.32,w:11,h:0.35,margin:0,fontFace:"Arial"});
-    s.addText(`${i+1} / ${list.length}`,{x:11.4,y:0.32,w:1.2,h:0.35,align:"right",fontFace:"Arial",fontSize:10,color:"9AA3B2"});
-    const bx=1.75,bw=9.83;
-    s.addText("밝은 배경용",{x:bx,y:0.82,w:3,h:0.25,margin:0,fontFace:"Arial",bold:true,fontSize:9.5,color:"9AA3B2"});
-    pptBlock(p,s,e,bx,1.08,bw,2.9,false);
-    s.addText("어두운 배경용",{x:bx,y:4.18,w:3,h:0.25,margin:0,fontFace:"Arial",bold:true,fontSize:9.5,color:"9AA3B2"});
-    pptBlock(p,s,e,bx,4.44,bw,2.9,true);
+               {text:(e.title||"")+"  ·  "+(e.field||"")+"  ·  "+(e.company||""),options:{color:"6B7280",fontSize:11}}],
+      {x:0.7,y:0.4,w:11,h:0.35,margin:0,fontFace:PPT_FONT});
+    s.addText(`${i+1} / ${list.length}`,{x:11.4,y:0.4,w:1.2,h:0.35,align:"right",fontFace:PPT_FONT,fontSize:10,color:"9AA3B2"});
+    s.addText("밝은 배경용",{x:BX,y:1.3,w:3,h:0.22,margin:0,fontFace:PPT_FONT,bold:true,fontSize:9.5,color:"9AA3B2"});
+    pptBlock(p,s,e,BX,1.56,false,"Lblk");
+    s.addText("어두운 배경용",{x:BX,y:3.9,w:3,h:0.22,margin:0,fontFace:PPT_FONT,bold:true,fontSize:9.5,color:"9AA3B2"});
+    pptBlock(p,s,e,BX,4.16,true,"Dblk");
     if(i%6===0) await new Promise(r=>setTimeout(r,0));
   }
-  document.getElementById('progT').textContent='PPT 파일 저장 중...';
   try{
-    await p.writeFile({fileName:'패스파인더_위원블록_통합본.pptx'});
-    prog.classList.remove('on');toast('통합본 PPT 저장 완료');
+    document.getElementById('progT').textContent='블록 그룹화 처리 중...';
+    const ab=await p.write('arraybuffer');
+    const blob=await groupBlocksPptx(ab);
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;a.download='패스파인더_위원블록_통합본.pptx';a.click();
+    setTimeout(()=>URL.revokeObjectURL(url),3000);
+    prog.classList.remove('on');toast('통합본 PPT 저장 완료 (6.1×1.74 그룹 블록)');
   }catch(err){
-    console.error('pptx writeFile',err);
+    console.error('pptx',err);
     prog.classList.remove('on');
     toast('PPT 저장 실패: '+(err&&err.message?err.message:err));
   }
