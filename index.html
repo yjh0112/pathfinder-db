@@ -713,7 +713,7 @@ const PF={
   client:null,
   configured(){return !!(this.url&&this.key&&window.supabase&&this.client);},
   init(){ this.client=null; if(this.url&&this.key&&window.supabase){ try{this.client=window.supabase.createClient(this.url,this.key);}catch(e){this.client=null;} } },
-  row(e){return {id:e.id||undefined,name:e.name,title:e.title||"",field:e.field||"",affil:e.affil||"",status:e.status||"",company:e.company||"",careers:e.careers||[],edu:e.edu||"",book:e.book||"",sort_order:e._id};},
+  row(e){return {id:e.id||undefined,name:e.name,title:e.title||"",field:e.field||"",affil:e.affil||"",status:e.status||"",company:e.company||"",careers:e.careers||[],edu:e.edu||"",book:e.book||"",photo_path:e.photo_path||null,sort_order:e._id};},
   async load(){ const r=await this.client.from("experts").select("*").order("sort_order",{ascending:true}); if(r.error) throw r.error; return r.data||[]; },
   async push(){ if(!this.configured())return; const rows=EXPERTS.map(e=>this.row(e)); const r=await this.client.from("experts").upsert(rows,{onConflict:"id"}); if(r.error) throw r.error; }
 };
