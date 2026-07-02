@@ -175,11 +175,69 @@ body{font-family:"Pretendard","Malgun Gothic","Apple SD Gothic Neo",system-ui,sa
 .msel{margin-top:6px;display:flex;gap:6px;align-items:center}
 .msel select{border:1px solid var(--line);border-radius:7px;padding:6px 8px;font-size:12px;max-width:185px;font-family:inherit;color:var(--ink2)}
 .msum{font-size:13px;color:#0f9d58;font-weight:700;padding:8px 2px}
+
+/* ---- 로그인 게이트 ---- */
+#loginGate{position:fixed;inset:0;z-index:9999;background:linear-gradient(140deg,#0f1830,#16243F 58%,#1c2d50);display:flex;align-items:center;justify-content:center}
+.lg-card{width:min(380px,90vw);background:#fff;border-radius:16px;padding:34px 30px 28px;box-shadow:0 30px 80px rgba(0,0,0,.42);text-align:center;box-sizing:border-box}
+.lg-logo{height:44px;object-fit:contain;margin-bottom:14px}
+.lg-title{font-size:19px;font-weight:800;color:#16243F}
+.lg-sub{font-size:12.5px;color:#6b7280;margin:4px 0 22px}
+.lg-in{width:100%;padding:12px 14px;margin-bottom:11px;border:1px solid #E1E5EC;border-radius:10px;font-size:14px;box-sizing:border-box}
+.lg-in:focus{outline:none;border-color:#16243F}
+.lg-remember{display:flex;align-items:center;gap:7px;font-size:12px;color:#6b7280;margin:2px 2px 16px;cursor:pointer;justify-content:center}
+.lg-btn{width:100%;padding:12px;background:#16243F;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:2px}
+.lg-btn:hover{background:#1c2d50}
+.lg-msg{font-size:12.5px;color:#e11d48;min-height:18px;margin-top:12px}
+
+/* ---- Path#10 가이드 ---- */
+.pg-wrap{max-width:1080px}
+.pg-intro{background:linear-gradient(135deg,#16243F,#1c2d50);color:#fff;border-radius:14px;padding:20px 24px;margin-bottom:6px}
+.pg-intro h2{margin:0 0 6px;font-size:18px;font-weight:800}
+.pg-intro p{margin:0;font-size:12.5px;color:#cdd6e6;line-height:1.6}
+.pg-flow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.pg-flow span{background:rgba(255,255,255,.08);border:1px solid rgba(203,177,120,.45);color:#e7d9b8;font-size:11px;padding:4px 11px;border-radius:20px}
+.pg-step-label{font-size:11.5px;font-weight:800;color:#9aa3b2;margin:18px 2px 8px;letter-spacing:.4px}
+.pg-seg{display:inline-flex;background:#eef1f6;border-radius:10px;padding:4px;gap:4px}
+.pg-seg button{border:none;background:transparent;padding:9px 24px;border-radius:8px;font-size:14px;font-weight:700;color:#6b7280;cursor:pointer}
+.pg-seg button.on{background:#16243F;color:#fff}
+.pg-needs{display:grid;grid-template-columns:repeat(auto-fill,minmax(212px,1fr));gap:10px}
+.pg-need{background:#fff;border:1.5px solid #E7EAF0;border-radius:12px;padding:13px 15px;cursor:pointer;transition:.15s}
+.pg-need:hover{border-color:#CBB178;box-shadow:0 6px 18px rgba(22,36,63,.08)}
+.pg-need.on{border-color:#16243F;box-shadow:0 6px 20px rgba(22,36,63,.13)}
+.pg-need .ic{font-size:21px}
+.pg-need .nl{font-size:14px;font-weight:800;color:#16243F;margin:6px 0 3px}
+.pg-need .nd{font-size:11px;color:#6b7280;line-height:1.5}
+.pg-detail{margin-top:16px;background:#fff;border:1px solid #E7EAF0;border-radius:14px;padding:20px 22px}
+.pg-paths{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0}
+.pg-pchip{display:inline-flex;align-items:center;gap:7px;border-radius:10px;padding:7px 12px;color:#fff;font-size:12.5px;font-weight:800}
+.pg-pchip small{font-weight:500;opacity:.92}
+.pg-tone{display:inline-block;background:#eef1f6;color:#586377;font-size:11.5px;font-weight:700;padding:5px 13px;border-radius:20px}
+.pg-experts{display:grid;grid-template-columns:repeat(auto-fill,minmax(184px,1fr));gap:9px;margin-top:8px}
+.pg-ex{display:flex;gap:9px;align-items:center;background:#F8FAFC;border:1px solid #EAEEF3;border-radius:10px;padding:8px 10px;cursor:pointer;transition:.12s}
+.pg-ex:hover{border-color:#CBB178;background:#fff}
+.pg-ex .exph{width:38px;height:46px;border-radius:6px;flex:none;background:#E9EDF3;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#8A93A6;overflow:hidden}
+.pg-ex .exph img{width:100%;height:100%;object-fit:cover}
+.pg-ex .exi b{font-size:13px;color:#16243F}
+.pg-ex .exi div{font-size:10.5px;color:#6b7280;margin-top:2px;line-height:1.35}
+.pg-note{font-size:11px;color:#9aa3b2;margin-top:15px;line-height:1.55;border-top:1px solid #EEF1F5;padding-top:12px}
 </style>
   <script src="config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+<div id="loginGate">
+  <div class="lg-card">
+    <img id="lgLogo" class="lg-logo" alt="">
+    <div class="lg-title">신한 Premier 패스파인더</div>
+    <div class="lg-sub">위원 관리 시스템</div>
+    <input id="lgUser" class="lg-in" placeholder="아이디" autocomplete="username">
+    <input id="lgPass" class="lg-in" type="password" placeholder="비밀번호" autocomplete="current-password">
+    <label class="lg-remember"><input type="checkbox" id="lgRemember"> 이 컴퓨터에서 로그인 유지</label>
+    <button id="lgBtn" class="lg-btn">로그인</button>
+    <div id="lgMsg" class="lg-msg"></div>
+  </div>
+</div>
+<script>if(sessionStorage.getItem('pf_auth')==='1'||localStorage.getItem('pf_auth')==='1'){var _g=document.getElementById('loginGate');if(_g)_g.style.display='none';}</script>
 <aside class="side">
   <div class="brand"><img class="brandlogo" alt="신한 Premier 패스파인더"><span class="pf">PATHFINDER</span></div>
   <nav class="nav">
@@ -187,6 +245,7 @@ body{font-family:"Pretendard","Malgun Gothic","Apple SD Gothic Neo",system-ui,sa
     <a data-pg="block"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/></svg>위원 블록 생성</a>
     <a data-pg="match"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="9" r="6"/><path d="M21 21l-4-4M7.5 9l1 1 2.5-2.5"/></svg>사진 매칭 점검</a>
     <a data-pg="retired"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="3"/><path d="M3 21v-1a6 6 0 0 1 9-5.2M15 11l5 5M20 11l-5 5"/></svg>해촉 위원</a>
+    <a data-pg="path"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l-6 3V6l6-3 6 3 6-3v15l-6 3-6-3z"/><path d="M9 3v15M15 6v15"/></svg>Path#10 가이드</a>
   </nav>
   <div class="foot">신한 Premier 패스파인더<br>위원 안내 자동화 · v1</div>
 </aside>
@@ -270,6 +329,15 @@ body{font-family:"Pretendard","Malgun Gothic","Apple SD Gothic Neo",system-ui,sa
     <div class="phead"><div><h1>해촉 위원</h1>
       <div class="counts" id="retiredCount" style="margin-top:6px"></div></div></div>
     <div class="grid" id="retiredGrid"></div>
+  </div>
+
+  <div class="page" id="pg-path">
+    <div class="pg-wrap">
+      <div class="pg-intro"><h2>Path #10 컨설팅 가이드</h2>
+        <p>50억 원 이상 고객의 핵심 니즈에서 출발해, 적합한 Path 프로그램과 전문위원을 빠르게 연결합니다. 아래 순서대로 따라가세요.</p>
+        <div class="pg-flow"><span>고객유형</span><span>→ 핵심니즈</span><span>→ 투자성향</span><span>→ Path</span><span>→ 전문위원</span></div></div>
+      <div id="pg-path-body"></div>
+    </div>
   </div>
 
   </div>
@@ -420,7 +488,7 @@ function renderCounts(){
 }
 function cardHTML(e){
   const ph=photoFor(e);
-  const phHTML=ph?`<div class="ph"><img src="${ph}"></div>`:`<div class="ph">${initials(e.name)}</div>`;
+  const phHTML=ph?`<div class="ph"><img loading="lazy" decoding="async" src="${ph}"></div>`:`<div class="ph">${initials(e.name)}</div>`;
   const fc=FIELD_COLORS[e.field]||['#eef1f6','#586377'];
   const careers=e.careers.slice(0,3).map(c=>`<li>${esc(c)}</li>`).join('');
   const retired=!isActive(e);
@@ -470,7 +538,7 @@ window.deleteExpert=async id=>{const e=EXPERTS[id];if(!e)return;
 /* ---------- block page ---------- */
 function blockHTML(e,forExport){
   const ph=photoFor(e);
-  const phHTML=ph?`<div class="bph"><img src="${ph}"></div>`:`<div class="bph">${initials(e.name)}</div>`;
+  const phHTML=ph?`<div class="bph"><img loading="lazy" decoding="async" src="${ph}"></div>`:`<div class="bph">${initials(e.name)}</div>`;
   const max=+document.getElementById('maxCareer').value;
   const careers=blockLines(e,max).map(c=>`<li>${esc(c)}</li>`).join('');
   return `<div class="block ${CURBG==='transparent'?'transparent':''}" data-name="${esc(e.name)}">
@@ -683,7 +751,7 @@ document.getElementById('zipInput').onchange=async ev=>{
     document.getElementById('progT').textContent=`사진 불러오는 중 ${i}/${entries.length}`;
     document.getElementById('progBar').style.width=(i/entries.length*100)+'%';
     const base=z.name.split('/').pop().replace(/\.[^.]+$/,'');
-    const blob=await z.async('blob');const url=await blobToData(blob);
+    const blob=await z.async('blob');const url=await blobToThumb(blob,420,0.85);
     PHOTOS[norm(base)]=url;PHOTOS[base]=url;PHOTO_LIST[base]=url;
   }
   prog.classList.remove('on');afterPhotos();
@@ -694,12 +762,20 @@ document.getElementById('dirInput').onchange=async ev=>{
   for(const f of files){i++;
     document.getElementById('progT').textContent=`사진 불러오는 중 ${i}/${files.length}`;
     document.getElementById('progBar').style.width=(i/files.length*100)+'%';
-    const base=f.name.replace(/\.[^.]+$/,'');const url=await blobToData(f);
+    const base=f.name.replace(/\.[^.]+$/,'');const url=await blobToThumb(f,420,0.85);
     PHOTOS[norm(base)]=url;PHOTOS[base]=url;PHOTO_LIST[base]=url;
   }
   prog.classList.remove('on');afterPhotos();
 };
 function blobToData(b){return new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.readAsDataURL(b);});}
+function blobToThumb(b,maxPx,q){return new Promise(res=>{const u=URL.createObjectURL(b);const im=new Image();
+  im.onload=()=>{let w=im.naturalWidth,hh=im.naturalHeight;const sc=Math.min(1,(maxPx||420)/Math.max(w,hh));
+    const cw=Math.max(1,Math.round(w*sc)),ch=Math.max(1,Math.round(hh*sc));
+    const cv=document.createElement('canvas');cv.width=cw;cv.height=ch;
+    const cx=cv.getContext('2d');cx.drawImage(im,0,0,cw,ch);URL.revokeObjectURL(u);
+    try{res(cv.toDataURL('image/jpeg',q||0.85));}catch(e){res(cv.toDataURL());}};
+  im.onerror=()=>{URL.revokeObjectURL(u);const fr=new FileReader();fr.onload=()=>res(fr.result);fr.readAsDataURL(b);};
+  im.src=u;});}
 function afterPhotos(){
   const matched=EXPERTS.filter(e=>photoFor(e)).length;
   document.getElementById('photoStat').textContent=`사진 ${matched}/${EXPERTS.length} 매칭`;
@@ -798,9 +874,10 @@ document.querySelectorAll('.nav a').forEach(a=>a.onclick=()=>{
   document.querySelectorAll('.nav a').forEach(x=>x.classList.remove('on'));a.classList.add('on');
   const pg=a.dataset.pg;document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
   document.getElementById('pg-'+pg).classList.add('on');
-  document.getElementById('ttl').textContent=({db:'전문가 DB',block:'위원 블록 생성',match:'사진 매칭 점검',retired:'해촉 위원'})[pg];
+  document.getElementById('ttl').textContent=({db:'전문가 DB',block:'위원 블록 생성',match:'사진 매칭 점검',retired:'해촉 위원',path:'Path #10 컨설팅 가이드'})[pg];
   if(pg==='match')renderMatch();
   if(pg==='retired')renderRetired();
+  if(pg==='path')renderPathGuide();
 });
 
 /* ---------- Supabase (online accumulation) ---------- */
@@ -863,7 +940,8 @@ async function uploadOnePhoto(e,file){
   var msg=document.getElementById("m_photoMsg");
   try{ if(msg)msg.textContent="업로드 중…";
     var path=e.id+".jpg";
-    var r=await PF.client.storage.from("expert-photos").upload(path,file,{upsert:true,contentType:file.type||"image/jpeg"});
+    var thumb=await blobToThumb(file,420,0.85); var up=dataURLtoBlob(thumb);
+    var r=await PF.client.storage.from("expert-photos").upload(path,up,{upsert:true,contentType:"image/jpeg"});
     if(r.error) throw r.error;
     e.photo_path=path; PHOTO_CACHE_BUST=Date.now();
     await PF.push();
@@ -911,6 +989,78 @@ document.getElementById("resetData").onclick=function(){
   document.getElementById("savedNote").style.display="none";
   renderCounts();renderGrid();renderPicklist();renderPreview();toast("원본으로 초기화됨");};
 bootData();
+
+/* ---------- Path#10 가이드 ---------- */
+const PATH_COLORS={'#1':'C53030','#2':'00796B','#3':'6A1B9A','#4':'B7791F','#5':'2E7D32','#6':'E65100','#7':'9E1B32','#8':'AD1457','#9':'1565C0','#10':'92400E','#11':'0369A1','#12':'B7410E','#13':'00838F'};
+const PATH_GUIDE={
+  개인:[
+    {key:'부동산',icon:'🏠',label:'부동산 매각·자산정리',desc:'보유 부동산 매각 시점·절세 구조 설계와 매각대금 재투자 방향 수립',paths:[{n:'#1',t:'부동산 매각 절세'},{n:'#2',t:'매각대금 분산투자'}],tone:'안정~중립형',fields:['부동산','세무','법률']},
+    {key:'상속증여',icon:'👪',label:'상속·증여 설계',desc:'사전 증여·가업승계·증여신탁 등 세대이전 절세 전략',paths:[{n:'#3',t:'증여·상속 설계'}],tone:'안정형',fields:['상속/증여','세무','법률']},
+    {key:'현금흐름',icon:'💵',label:'현금흐름·은퇴 인컴',desc:'연금·배당형 자산으로 은퇴 후 월 인컴 파이프라인 설계',paths:[{n:'#5',t:'연금·배당 인컴'},{n:'#12',t:'은퇴·연금',proposed:true}],tone:'안정~중립형',fields:['퇴직연금','투자상품','포트폴리오']},
+    {key:'해외자산',icon:'🌐',label:'해외자산·글로벌',desc:'해외 부동산·금융자산 정리, 이중과세 절세 및 글로벌 분산',paths:[{n:'#8',t:'해외자산 절세'},{n:'#11',t:'외환·글로벌',proposed:true}],tone:'중립~공격형',fields:['외환','세무','투자전략','주식/섹터']},
+    {key:'가족재산',icon:'🛡️',label:'가족재산 보호·분산투자',desc:'리스크 분산 포트폴리오와 유사시 대비 자산 보호 구조',paths:[{n:'#2',t:'분산 포트폴리오'},{n:'#9',t:'리스크 대비 설계'}],tone:'중립형',fields:['포트폴리오','투자전략','투자상품']},
+    {key:'리서치',icon:'📈',label:'시장·종목 리서치 자문',desc:'증시·섹터 전망과 종목 리서치 기반 적극 운용 자문 (최대 위원 풀)',paths:[{n:'#13',t:'리서치 자문',proposed:true}],tone:'공격형',fields:['주식/섹터','투자전략','트렌드']}
+  ],
+  법인:[
+    {key:'법인운용',icon:'🏢',label:'포트폴리오 의사결정·잉여금 운용',desc:'법인 잉여금의 세후 수익 극대화와 분산 운용 설계',paths:[{n:'#6',t:'법인 잉여금 운용'},{n:'#2',t:'분산 포트폴리오'}],tone:'운용형',fields:['포트폴리오','투자전략','투자상품','IB']},
+    {key:'지분매각',icon:'🤝',label:'기업정리·지분매각(M&A)',desc:'사업 매각·지분 정리 시 절세 구조와 거래 자문',paths:[{n:'#7',t:'기업매각 절세'}],tone:'절세형',fields:['IB','세무','법률']},
+    {key:'사회공헌',icon:'🎗️',label:'사회공헌·기부 설계',desc:'공익재단·기부신탁 등 사회공헌과 절세 병행 설계',paths:[{n:'#10',t:'공익·기부 설계'}],tone:'절세형',fields:['세무','법률','상속/증여']}
+  ]
+};
+let PG_TYPE='개인',PG_NEED=null;
+function pgExpertsFor(fields){const ord={};fields.forEach((f,i)=>ord[f]=i);
+  return EXPERTS.filter(e=>isActive(e)&&fields.includes(e.field))
+    .sort((a,b)=>(ord[a.field]-ord[b.field])||((photoFor(b)?1:0)-(photoFor(a)?1:0))||a.name.localeCompare(b.name,'ko'));}
+function renderPathGuide(){
+  const host=document.getElementById('pg-path-body');if(!host)return;
+  const needs=PATH_GUIDE[PG_TYPE];
+  if(!PG_NEED||!needs.find(n=>n.key===PG_NEED))PG_NEED=needs[0].key;
+  const seg=`<div class="pg-seg">${['개인','법인'].map(t=>`<button class="${t===PG_TYPE?'on':''}" onclick="pgSetType('${t}')">${t} 고객</button>`).join('')}</div>`;
+  const cards=needs.map(n=>`<div class="pg-need ${n.key===PG_NEED?'on':''}" onclick="pgSetNeed('${n.key}')"><div class="ic">${n.icon}</div><div class="nl">${n.label}</div><div class="nd">${n.desc}</div></div>`).join('');
+  const n=needs.find(x=>x.key===PG_NEED);
+  const chips=n.paths.map(p=>`<span class="pg-pchip" style="background:#${PATH_COLORS[p.n]||'16243F'}">${p.n}${p.proposed?' ✦':''} <small>${p.t}</small></span>`).join('');
+  const exs=pgExpertsFor(n.fields);
+  const exHTML=exs.length?exs.map(e=>{const ph=photoFor(e);return `<div class="pg-ex" onclick="openEdit(${e._id})"><div class="exph">${ph?`<img loading="lazy" decoding="async" src="${ph}">`:esc(initials(e.name))}</div><div class="exi"><b>${esc(e.name)}</b><div>${esc(e.field)} · ${esc(e.affil||'')}</div></div></div>`;}).join(''):'<div style="color:#9aa3b2;font-size:12px;padding:10px 4px">연결된 위원이 없습니다. DB에 해당 분야 위원을 추가하세요.</div>';
+  host.innerHTML=`<div class="pg-step-label">STEP 1 · 고객 유형</div>${seg}
+    <div class="pg-step-label">STEP 2 · 핵심 니즈 선택</div>
+    <div class="pg-needs">${cards}</div>
+    <div class="pg-detail">
+      <div style="font-size:15px;font-weight:800;color:#16243F">${n.icon} ${n.label}</div>
+      <div class="pg-step-label" style="margin:14px 0 4px">추천 Path</div>
+      <div class="pg-paths">${chips}</div>
+      <div style="margin-top:10px"><span class="pg-tone">권장 투자성향 · ${n.tone}</span></div>
+      <div class="pg-step-label" style="margin:16px 0 4px">이 니즈에 맞는 전문위원 <span style="color:#16243F">${exs.length}명</span> <span style="font-weight:400;color:#9aa3b2">· 현직 분야 매칭 · 클릭 시 상세</span></div>
+      <div class="pg-experts">${exHTML}</div>
+      <div class="pg-note">✦ = 신설 제안 Path(#11 외환·글로벌 / #12 은퇴·연금 / #13 리서치 자문). Path 번호·명칭은 공식 브로슈어 기준으로 확인·수정해 주세요. 위원 매칭은 DB 분야값 기준 자동 연결입니다.</div>
+    </div>`;
+}
+window.pgSetType=t=>{PG_TYPE=t;PG_NEED=null;renderPathGuide();};
+window.pgSetNeed=k=>{PG_NEED=k;renderPathGuide();};
+/* ---------- 로그인 게이트 (간이 잠금) ---------- */
+// 비밀번호 변경: 새 비밀번호의 SHA-256 해시를 구해 passHash에 넣으세요.
+//  (브라우저 콘솔에서: crypto.subtle.digest('SHA-256',new TextEncoder().encode('새비번')).then(b=>console.log([...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join(''))) )
+const AUTH_DEFAULT={user:"premier",passHash:"4baf17647d193e3f5b4601d933652ed4db0d085c0ff1ed645069f5920eb10424"}; // 기본: premier / shinhan2026
+(function(){
+  const gate=document.getElementById('loginGate'); if(!gate)return;
+  if(sessionStorage.getItem('pf_auth')==='1'||localStorage.getItem('pf_auth')==='1'){gate.style.display='none';}
+  try{const lg=document.getElementById('lgLogo'); if(lg&&typeof LOGO_FULL!=='undefined') lg.src=LOGO_FULL;}catch(e){}
+  async function sha(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');}
+  async function tryLogin(){
+    const cfg=(window.PF_CONFIG&&window.PF_CONFIG.auth)||AUTH_DEFAULT;
+    const u=document.getElementById('lgUser').value.trim(),pw=document.getElementById('lgPass').value;
+    const msg=document.getElementById('lgMsg');
+    if(!pw){msg.textContent='비밀번호를 입력하세요.';return;}
+    const hx=await sha(pw);
+    if(u===(cfg.user||'')&&hx===cfg.passHash){
+      (document.getElementById('lgRemember').checked?localStorage:sessionStorage).setItem('pf_auth','1');
+      gate.style.display='none';
+    }else{msg.textContent='아이디 또는 비밀번호가 올바르지 않습니다.';document.getElementById('lgPass').value='';}
+  }
+  document.getElementById('lgBtn').onclick=tryLogin;
+  document.getElementById('lgPass').addEventListener('keydown',e=>{if(e.key==='Enter')tryLogin();});
+  document.getElementById('lgUser').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('lgPass').focus();});
+})();
+
 </script>
 </body>
 </html>
