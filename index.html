@@ -1039,7 +1039,7 @@ window.pgSetNeed=k=>{PG_NEED=k;renderPathGuide();};
 /* ---------- 로그인 게이트 (간이 잠금) ---------- */
 // 비밀번호 변경: 새 비밀번호의 SHA-256 해시를 구해 passHash에 넣으세요.
 //  (브라우저 콘솔에서: crypto.subtle.digest('SHA-256',new TextEncoder().encode('새비번')).then(b=>console.log([...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join(''))) )
-const AUTH_DEFAULT={user:"premier",passHash:"4baf17647d193e3f5b4601d933652ed4db0d085c0ff1ed645069f5920eb10424"}; // 기본: premier / shinhan2026
+const AUTH_DEFAULT={user:"admin1",passHash:"ddb1369d147b442dd34d5a1b000084cdd96f70ca6535b8d6636fe676b6248955"}; // 계정: admin1 / 0301
 (function(){
   const gate=document.getElementById('loginGate'); if(!gate)return;
   if(sessionStorage.getItem('pf_auth')==='1'||localStorage.getItem('pf_auth')==='1'){gate.style.display='none';}
